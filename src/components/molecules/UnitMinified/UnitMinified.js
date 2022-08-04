@@ -7,7 +7,9 @@ const UnitMinified = ({ unit }) => {
   return (
     <Tag
       color={`#${genes}`}
-      style={{ opacity: isDead && 0.03, height: 22, width: 60 }}
+      style={{
+        marginTop: 0.5, opacity: isDead && 0.03, height: 22, width: 60,
+      }}
     >
       {' '}
     </Tag>

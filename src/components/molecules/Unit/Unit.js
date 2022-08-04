@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  Badge, Popover, Space, Tag,
+  Badge, Empty, Popover, Space, Tag, Typography,
 } from 'antd'
 import _ from 'lodash'
 
@@ -12,6 +12,8 @@ const GENERATION_COUNT_COLORS = {
   2: '#fadb14',
   3: '#fa541c',
 }
+
+const { Text } = Typography
 
 const Unit = ({
   unit, isParentForHoveredUnit, onMouseEnter, onMouseLeave, isAnythingHovered, isHovered,
@@ -73,39 +75,35 @@ const GenesHistory = ({ unit }) => {
     const secondParentGenesArray = UnitStore.byId.get(parentsIds[1]).genes.split('')
 
     return (
-      <div style={{
-        display: 'grid',
-        height: '200px',
-        gap: 5,
-      }}
-      >
-        {/* TODO: прихорошить */}
-        {/* TODO: проверить, чет часто мутации совпадают с родительскими генами */}
-
-        <Space style={{ fontFamily: 'monospace' }}>
+      <Space style={{ fontFamily: 'monospace', marginRight: -8 }}>
+        { /* TODO: прихорошить */}
+        { /* TODO: проверить, чет часто мутации совпадают с родительскими генами */}
+        {/* TODO: Поправить марджины */}
+        <Space direction="vertical">
+          <Text style={{ marginLeft: 3 }}>P1</Text>
+          {firstParentGenesArray.map((gene, i) => (
+            <Tag
+              color={unitGenesArray[i] === gene ? 'green' : 'white'}
+              style={{ color: 'black' }}
+            >
+              {gene}
+            </Tag>
+          ))}
+        </Space>
+        <Space direction="vertical">
+          <Text style={{ marginLeft: 3 }}>P2</Text>
+          {secondParentGenesArray.map((gene, i) => (
+            <Tag
+              color={unitGenesArray[i] === gene ? 'green' : 'white'}
+              style={{ color: 'black' }}
+            >
+              {gene}
+            </Tag>
+          ))}
+        </Space>
+        {mutationHistory.length ? (
           <Space direction="vertical">
-            {firstParentGenesArray.map((gene, i) => (
-              <Tag
-                color={unitGenesArray[i] === gene ? 'green' : 'white'}
-                style={{ color: 'black' }}
-              >
-                {gene}
-              </Tag>
-            ))}
-          </Space>
-          <Space direction="vertical">
-            {secondParentGenesArray.map((gene, i) => (
-              <Tag
-                color={unitGenesArray[i] === gene ? 'green' : 'white'}
-                style={{ color: 'black' }}
-              >
-                {gene}
-              </Tag>
-            ))}
-          </Space>
-          <Space direction="vertical">
-            {/* {console.log(_.range(0, 5).map(emptyIdx => mutationHistory
-              .find(({ idx }) => idx === emptyIdx)))} */}
+            <Text style={{ marginLeft: 8 }}>M</Text>
             {_.range(0, 6)
               .map(emptyIdx => mutationHistory
                 .find(({ idx }) => idx === emptyIdx))
@@ -113,12 +111,18 @@ const GenesHistory = ({ unit }) => {
                 ? <Tag color="red">{mutation?.hex}</Tag>
                 : <Tag style={{ opacity: 0 }}>0</Tag>))}
           </Space>
-        </Space>
-      </div>
+        ) : null}
+      </Space>
     )
   }
 
-  return null
+  return (
+    <Empty
+      description={'Божественное творение.\n\nНет родителей, как нет пупка у Адама.'}
+      image={Empty.PRESENTED_IMAGE_SIMPLE}
+      style={{ width: '200px', wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}
+    />
+  )
 }
 
 export default Unit

@@ -3,7 +3,9 @@ import { observer } from 'mobx-react'
 import {
   Button, message, Popconfirm, Row, Space, Switch, Typography,
 } from 'antd'
-import { ExperimentTwoTone, FrownTwoTone, SmileTwoTone } from '@ant-design/icons'
+import {
+  ExperimentTwoTone, EyeInvisibleOutlined, EyeOutlined, FundTwoTone,
+} from '@ant-design/icons'
 
 import Unit from 'components/molecules/Unit/Unit'
 import UnitMinified from 'components/molecules/UnitMinified/UnitMinified'
@@ -18,13 +20,14 @@ const { Text, Title } = Typography
 // (!) TODO: то ли шансы родить выше, чем умереть, то ли неправильно считается шанс выжить при росте популяции
 // Да, действительно с ростом популяции роста смертности не происходит
 // (!!) TODO: В общем, докрутить так, чтобы при меньшем количестве шансов было больше, а при большем наоборот — меньше
+// (!!) TODO: адаптировать под мобилку
 
 // TODO: понять почему иногда счетчики не перерисовываются
 // TODO: добавить автосмену поколений с простой регулировкой скорости
 // TODO: перевернуть отображение старыми юнитами вниз?
 // TODO: (!) история родительских генов и мутации при приближении
 // TODO: добавить возможность экспорта истории и дерева
-// TODO: добавить возможность влияния на шансы (питание, конкуренты, среда,...)
+// TODO: добавить возможность влияния на шансы (уровень мутантности, питание, конкуренты, среда,...)
 
 const Evolution = () => {
   const [currentGeneration, setCurrentGeneration] = useState(1)
@@ -53,7 +56,7 @@ const Evolution = () => {
   }, [currentGeneration])
 
   useEffect(() => {
-    if (currentGeneration > 1 && isNoAliveUnits) {
+    if (currentGeneration > 1 && UnitStore.units.filter(({ isDead }) => !isDead) < 1) {
       message.warn('Популяция всё, попробуйте создать новую')
     }
   }, [currentGeneration, isNoAliveUnits])
@@ -97,7 +100,7 @@ const Evolution = () => {
       <Space direction="vertical" size={40} style={{ padding: 50, margin: '0 auto' }}>
         <Space direction="vertical" style={{ width: '100%' }}>
           <Row align="middle" justify="space-between">
-            <Space size={20}>
+            <Space size={15}>
               <Title level={4} style={{ marginBottom: 3 }}>{populationName}</Title>
               <Text>
                 {`${currentGeneration} поколение`}
@@ -105,16 +108,16 @@ const Evolution = () => {
             </Space>
             <Space>
               <Switch
-                on={isMinifiedMode}
-                size="small"
+                checked={!isMinifiedMode}
+                checkedChildren={<EyeOutlined />}
                 style={{ marginBottom: 3 }}
+                unCheckedChildren={<EyeInvisibleOutlined />}
                 onClick={() => setMinifiedMode(!isMinifiedMode)}
               />
-              <Text>Упрощённый режим</Text>
             </Space>
           </Row>
           <Row align="start">
-            <Space size={30}>
+            <Space size={25}>
               <Space size={5}>
                 <ExperimentTwoTone
                   twoToneColor="#af50f2"
@@ -126,22 +129,23 @@ const Evolution = () => {
               {lastBornCount !== null
                 && (
                   <Space size={5}>
-                    <SmileTwoTone
+                    <FundTwoTone
                       twoToneColor="#af50f2"
                     />
                     <Text>
-                      {`Последний прирост: ${lastBornCount}`}
+                      {`Прирост: ${lastBornCount}`}
                     </Text>
                   </Space>
                 )}
               {lastDestroyedCount !== null
                 && (
                   <Space size={5}>
-                    <FrownTwoTone
+                    <FundTwoTone
+                      style={{ transform: 'scaleY(-1)' }}
                       twoToneColor="#af50f2"
                     />
                     <Text>
-                      {`Последние потери: ${lastDestroyedCount}`}
+                      {`Потери: ${lastDestroyedCount}`}
                     </Text>
                   </Space>
                 )}
@@ -150,12 +154,13 @@ const Evolution = () => {
           </Row>
         </Space>
         <div style={{
-          width: 800,
+          width: 'calc(100vw - 30px)',
+          maxWidth: 800,
           height: 300,
           display: 'grid',
-          gridTemplateColumns: 'repeat(10, 1fr)',
-          gap: 15,
-          gridAutoRows: 15,
+          gridTemplateColumns: 'repeat(auto-fill, 68px)',
+          gap: 10,
+          gridAutoRows: 25,
         }}
         >
           {/* TODO: Понять почему тут приходится фильтровать вместо простого вызова .aliveUnits */}
