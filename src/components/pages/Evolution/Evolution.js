@@ -179,27 +179,32 @@ const Evolution = () => {
               <UnitMinified key={unit.id} unit={unit} />
             )))}
         </div>
-        <Row align="center">
-          <Button
-            disabled={isNoAliveUnits}
-            onClick={() => setCurrentGeneration(currentGeneration + 1)}
-          >
-            Следующее поколение
-          </Button>
-        </Row>
-        <Row align="center">
-          <Popconfirm
-            cancelText="Нет"
-            okText="Да"
-            placement="bottom"
-            title="Начать сначала?"
-            onConfirm={handleResetClick}
-          >
-            <Button>
-              Начать сначала
+        <Space direction="vertical" size={25} style={{ width: '100%' }}>
+          <Row align="center">
+            <Button
+              disabled={isNoAliveUnits}
+              type="primary"
+              onClick={() => setCurrentGeneration(currentGeneration + 1)}
+            >
+              Следующее поколение
             </Button>
-          </Popconfirm>
-        </Row>
+          </Row>
+          <Row align="center">
+            <Popconfirm
+              cancelButtonProps={{ size: 'large' }}
+              cancelText="Нет"
+              okButtonProps={{ size: 'large' }}
+              okText="Да"
+              placement="bottom"
+              title="Начать сначала?"
+              onConfirm={handleResetClick}
+            >
+              <Button>
+                Начать сначала
+              </Button>
+            </Popconfirm>
+          </Row>
+        </Space>
       </Space>
     </Row>
   )
