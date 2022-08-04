@@ -22,8 +22,8 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route element={<Evolution />} exact path="/evolution" />
-        <Route element={<Navigate replace to="/evolution" />} path="*" />
+        <Route element={<Evolution />} exact path="/" />
+        <Route element={<Navigate replace to="/" />} path="*" />
       </Routes>
     </Router>
   )
